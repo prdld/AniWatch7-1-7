@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>AniWatch 7-1-7</title> -->
+    
+    <link rel="icon" href="https://img5.pic.in.th/file/secure-sv1/66smalldfa2d0462db6f9b8.png" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<head>
+  <base target="_top">
+  <?!= include('Stylesheet_Production'); ?>
+  <?!= include('Stylesheet'); ?>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    .time-period-column {
+      width: 25%;
+      font-weight: bold;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    textarea.form-textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    /*-- CSS สำหรับกลุ่ม Checkbox --*/
+    .symptom-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 0.5rem;
+      background-color: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.375rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .symptom-group label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+    }
+
+    .symptom-group input {
+      margin-right: 0.5rem;
+    }
+    .navbar {
+    background-color: #a0ebd7;
+    padding: 10px 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between; /* จัดให้โลโก้และเมนูอยู่คนละฝั่ง */
+    align-items: center;
+}
+
+/* ส่วนโลโก้และชื่อแอป */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 45px; /* ปรับขนาดโลโก้ให้พอดีกับ Nav Bar */
+}
+
+.app-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #005a8d;
+}
+
+/* ส่วนของเมนู (Nav Links) */
+.nav-links {
+    list-style: none; /* เอา bullet point ออก */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 10px; /* ระยะห่างระหว่างเมนู */
+}
+
+.nav-links a {
+    text-decoration: none; /* เอาเส้นใต้ลิงก์ออก */
+    color: #333;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* เพิ่มอนิเมชันตอน hover */
+}
+
+/* เอฟเฟกต์เมื่อนำเมาส์ไปชี้ที่เมนู */
+.nav-links a:hover {
+    background-color: #eef3f6;
+    color: #005a8d;
+}
+    
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+        <div class="logo-container">
+            <img src="https://img5.pic.in.th/file/secure-sv1/66smalldfa2d0462db6f9b8.png" alt="AniWatch 7-1-7 Logo" class="logo">
+            <span class="app-title">AniWatch 7-1-7</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="https://script.google.com/macros/s/AKfycbwNuJryevyp_F7lgrDmzM_J1DD8sjsWh8HbTG8SY56htcJtwf08SQzj1ixfb-dht3-_/exec">หน้าหลัก</a></li>
+            <!-- <li><a href="#data-entry">บันทึกข้อมูล</a></li>
+            <li><a href="#reports">รายงานผล</a></li>
+            <li><a href="#about">เกี่ยวกับ</a></li>
+            <li><a href="#contact">ติดต่อเรา</a></li> -->
+        </ul>
+    </nav>
+  <div class="container">
+    <!-- <img src="https://img5.pic.in.th/file/secure-sv1/66smalldfa2d0462db6f9b8.png" alt="AniWatch 7-1-7 Logo" class="logo"> -->
+    <br><h1>เครื่องมือวัดความรวดเร็วในการป้องกันและควบคุมโรคในปศุสัตว์</h1>
+    <form id="timeliness-form">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="agency" class="block text-sm font-medium text-gray-700 mb-1">หน่วยงาน <span class="text-red-500">*</span></label>
+          <select id="agency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">-- เลือกหน่วยงาน --</option>
+                        <option value="สำนักงานปศุสัตว์เขต 4">สำนักงานปศุสัตว์เขต 4</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดอุดรธานี">สำนักงานปศุสัตว์จังหวัดอุดรธานี</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดขอนแก่น">สำนักงานปศุสัตว์จังหวัดขอนแก่น</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดหนองคาย">สำนักงานปศุสัตว์จังหวัดหนองคาย</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดกาฬสินธุ์">สำนักงานปศุสัตว์จังหวัดกาฬสินธุ์</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดเลย">สำนักงานปศุสัตว์จังหวัดเลย</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดนครพนม">สำนักงานปศุสัตว์จังหวัดนครพนม</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดมหาสารคาม">สำนักงานปศุสัตว์จังหวัดมหาสารคาม</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดหนองบัวลำภู">สำนักงานปศุสัตว์จังหวัดหนองบัวลำภู</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดสกลนคร">สำนักงานปศุสัตว์จังหวัดสกลนคร</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดมุกดาหาร">สำนักงานปศุสัตว์จังหวัดมุกดาหาร</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดบึงกาฬ">สำนักงานปศุสัตว์จังหวัดบึงกาฬ</option>
+                        <option value="สำนักงานปศุสัตว์จังหวัดร้อยเอ็ด">สำนักงานปศุสัตว์จังหวัดร้อยเอ็ด</option>
+                        <option value="ศูนย์วิจัยและพัฒนาการสัตวแพทย์ภาคตะวันออกเฉียงเหนือตอนบน จ.ขอนแก่น">ศูนย์วิจัยและพัฒนาการสัตวแพทย์ภาคตะวันออกเฉียงเหนือตอนบน จ.ขอนแก่น</option>
+                    </select>
+        </div>
+        <div>
+          <label for="animalSpecies" class="block text-sm font-medium text-gray-700 mb-1">ชนิดสัตว์ <span class="text-red-500">*</span></label>
+          <input type="text" id="animalSpecies" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">อายุสัตว์ <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <input type="number" id="animalAgeYear" placeholder="ปี" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <input type="number" id="animalAgeMonth" placeholder="เดือน" min="0" max="11" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="ownershipStatus" class="block text-sm font-medium text-gray-700 mb-1">สถานะการมีเจ้าของ <span class="text-red-500">*</span></label>
+          <select id="ownershipStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+             <option value="">-- เลือกสถานะ --</option>
+             <option value="มี">มี</option>
+             <option value="ไม่มี">ไม่มี</option>
+          </select>
+        </div>
+        <div>
+          <label for="vaccinationHistory" class="block text-sm font-medium text-gray-700 mb-1">ประวัติการฉีดวัคซีน <span class="text-red-500">*</span></label>
+          <select id="vaccinationHistory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">-- เลือกประวัติ --</option>
+                        <option value="ฉีด">ฉีด</option>
+                        <option value="ไม่ฉีด">ไม่ฉีด</option>
+                    </select>
+        </div>
+        <div id="vaccinationDateContainer" class="hidden">
+          <label for="vaccinationDate" class="block text-sm font-medium text-gray-700 mb-1">วันที่ฉีดวัคซีน <span class="text-red-500">*</span></label>
+          <input type="date" id="vaccinationDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <div>
+        <label for="causeSelect" class="block text-sm font-medium text-gray-700 mb-1">โรค/เหตุการณ์ผิดปกติ <span class="text-red-500">*</span></label>
+        <select id="causeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">-- เลือกสาเหตุ --</option>
+                    <option value="โรคพิษสุนัขบ้า">โรคพิษสุนัขบ้า</option>
+                    <option value="โรคแอนแทรกซ์">โรคแอนแทรกซ์</option>
+                    <option value="โรคไข้หูดับ">โรคไข้หูดับ</option>
+                    <option value="other">อื่นๆ</option>
+                </select>
+      </div>
+      <div id="otherCauseContainer" class="hidden mt-2">
+        <label for="otherCause" class="block text-sm font-medium text-gray-700 mb-1">ระบุสาเหตุอื่นๆ <span class="text-red-500">*</span></label>
+        <input type="text" id="otherCause" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label for="symptoms" class="block text-sm font-medium text-gray-700 mb-1">อาการในสัตว์ <span class="text-red-500">*</span></label>
+        <div id="symptoms-checkbox-container">
+          <p class="text-gray-500 text-sm">กรุณาเลือก "โรค/เหตุการณ์ผิดปกติ" ด้านบนเพื่อแสดงรายการอาการ</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div>
+          <label for="province" class="block text-sm font-medium text-gray-700 mb-1">จังหวัด <span class="text-red-500">*</span></label>
+          <select id="province" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">-- เลือกจังหวัด --</option>
+                    </select>
+        </div>
+        <div>
+          <label for="district" class="block text-sm font-medium text-gray-700 mb-1">อำเภอ <span class="text-red-500">*</span></label>
+          <select id="district" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled>
+                        <option value="">-- เลือกอำเภอ --</option>
+                    </select>
+        </div>
+        <div>
+          <label for="subdistrict" class="block text-sm font-medium text-gray-700 mb-1">ตำบล <span class="text-red-500">*</span></label>
+          <select id="subdistrict" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled>
+                        <option value="">-- เลือกตำบล --</option>
+                    </select>
+        </div>
+      </div>
+
+      <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">ละติจูด</label>
+          <input type="text" id="latitude" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">ลองจิจูด</label>
+          <input type="text" id="longitude" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+      <br>
+
+      <div class="card">
+        <h3>ขั้นตอนที่ 1: บันทึกวันที่ของเหตุการณ์ผิดปกติ</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>เหตุการณ์ผิดปกติ</th>
+              <th>วันที่ (วัน/เดือน/ปี)</th>
+              <th>คำบรรยาย</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>วันที่เกิดความผิดปกติ (Date of emergence):</strong><br><small>- วันที่สัตว์ป่วย หรือวันที่ได้รับการยืนยันทางระบาดวิทยาว่าสัตว์เริ่มมีอาการ</small>
+              </td>
+              <td><input type="date" id="date_of_emergence" required></td>
+              <td><input type="text" id="desc_emergence" required></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>วันที่ตรวจจับความผิดปกติ (Date of detection):</strong><br><small>- วันที่บันทึกเหตุการณ์ครั้งแรกในแหล่งข้อมูลหรือระบบใดก็ตาม</small>
+              </td>
+              <td><input type="date" id="date_of_detection" required></td>
+              <td><input type="text" id="desc_detection" required></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>วันที่แจ้งเตือน (Date of notification):</strong><br><small>วันที่แจ้งต่อหน่วยงานปศุสัตว์ที่รับผิดชอบเป็นครั้งแรก</small>
+              </td>
+              <td><input type="date" id="date_of_notification" required></td>
+              <td><input type="text" id="desc_notification" required></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>วันที่เริ่มดำเนินการตอบโต้ระยะเริ่มต้น (Date of immediate response initiation):</strong><br><small>วันที่ตอบโต้ระยะเริ่มต้น อย่างแรกสุด จากทั้งหมด 6 อย่าง (คำนวณอัตโนมัติ)</small>
+              </td>
+              <td><input type="date" id="date_of_response_initiation" required readonly></td>
+              <td><input type="text" id="desc_response_initiation" required></td>
+            </tr>
+            <tr>
+              <td><span>1. วันที่เริ่มการสอบสวนหรือส่งทีมสอบสวน/ทีมตอบโต้ลงพื้นที่ :</span></td>
+              <td><input type="date" id="date_investigation" class="response-date-source"></td>
+              <td><input type="text" id="desc_investigation" ></td>
+            </tr>
+            <tr>
+              <td>
+                <span>2. วันที่วิเคราะห์ทางระบาดวิทยาถึงภาระโรค ความรุนแรงและปัจจัยเสี่ยงพร้อมทั้งประเมินความเสี่ยงเบื้องต้น :</span>
+              </td>
+              <td><input type="date" id="date_epi_analysis" class="response-date-source"></td>
+              <td><input type="text" id="desc_epi_analysis" ></td>
+            </tr>
+            <tr>
+              <td>
+                <span>3. วันที่รับและส่งตัวอย่างไปห้องปฏิบัติการ และ/หรือได้รับผล่ต่ร่ว่จยืนยันทางห้องปฏิบัติการ :</span>
+              </td>
+              <td><input type="date" id="date_lab_sample" class="response-date-source"></td>
+              <td><input type="text" id="desc_lab_sample" ></td>
+            </tr>
+            <tr>
+              <td>
+                <span>4. วันที่เริ่มดำเนินมาตรการทางสัตวแพทย์*เพื่อควบคุมและป้องกันการติดเชื้อในพื้นที่เกิดโรค :</span>
+              </td>
+              <td><input type="date" id="date_vet_measure" class="response-date-source"></td>
+              <td><input type="text" id="desc_vet_measure" ></td>
+            </tr>
+            <tr>
+              <td><span>5. วันที่เริ่มสื่อสารความเสี่ยงและกิจกรรมที่เพิ่มการมีส่วนร่วมชุมชน :</span></td>
+              <td><input type="date" id="date_risk_comm" class="response-date-source"></td>
+              <td><input type="text" id="desc_risk_comm" ></td>
+            </tr>
+            <tr>
+              <td><span>6. วันที่เริ่มประสานงานภายในหน่วยงานและระหว่างหน่วยงาน(ถ้าจำเป็น) :</span></td>
+              <td><input type="date" id="date_coordination" class="response-date-source"></td>
+              <td><input type="text" id="desc_coordination" ></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>วันที่ดำเนินการตอบโต้ระยะเริ่มต้นเสร็จสิ้น (Date of immediate response completion):</strong><br><small>วันที่เสร็จสิ้นการดำเนินการตอบโต้ระยะเริ่มต้นที่เกี่ยวข้องทั้งหมด (คำนวณอัตโนมัติ)</small>
+              </td>
+              <td><input type="date" id="date_of_response_completion" required readonly></td>
+              <td><input type="text" id="desc_response_completion" required></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <small>*มาตรการทางสัตวแพทย์ เช่น การทำลายเชื้อ (Disinfection), การกำจัดซาก (Carcass disposal), การทำลายสัตว์/การคัดทิ้ง (Culling), การจำกัดการเคลื่อนย้ายสัตว์ (Movement control), การฉีดวัคซึนรอบจุดเกิตโรค (Ring vaccination), การรักษา (Treatment), การกักและแยกโรค (Quarantine & Isolation), การประกาศโรคระบาด (Outbreak announcement), การเฝ้าระวังในชุมชน (Community surveillance) เป็นต้น</small>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="card">
+        <h3>ขั้นตอนที่ 2: คำนวณความทันเวลา</h3>
+        <table>
+          <thead>
+            <tr>
+              <th class="time-period-column">ช่วงเวลา</th>
+              <th>การคำนวณ (วัน)</th>
+              <th>ความทันเวลา (วัน)</th>
+              <th>เป้าหมาย (วัน)</th>
+              <th>เป็นไปตามเป้าหมายหรือไม่ (ใช่/ไม่ใช่)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time-period-column" style="background-color: #fee2e2;"><strong>ตรวจจับ<br>Detection</strong>
+              </td>
+              <td>ระยะเวลาตั้งแต่วันที่เกิดความผิดปกติ ถึง<br>วันที่ตรวจพบ</td>
+              <td><input type="text" id="timeliness_detection_days" readonly></td>
+              <td><input type="text" id="target_detection_days" readonly></td>
+              <td><input type="text" id="meet_target_detection" readonly></td>
+            </tr>
+            <tr>
+              <td class="time-period-column" style="background-color: #fef9c3;">
+                <strong>แจ้งเตือน<br>Notification</strong>
+              </td>
+              <td>ระยะเวลาตั้งแต่วันที่ตรวจพบ ถึง<br>วันที่ได้แจ้งเตือน</td>
+              <td><input type="text" id="timeliness_notification_days" readonly></td>
+              <td><input type="text" id="target_notification_days" readonly></td>
+              <td><input type="text" id="meet_target_notification" readonly></td>
+            </tr>
+            <tr>
+              <td class="time-period-column" style="background-color: #a7f3d0;"><strong>ตอบโต้<br>Response</strong></td>
+              <td>ระยะเวลาตั้งแต่ วันที่ได้แจ้งเตือน ถึง<br>วันที่เสร็จสิ้นการตอบโต้ระยะเริ่มต้น</td>
+              <td><input type="text" id="timeliness_response_days" readonly></td>
+              <td><input type="text" id="target_response_days" readonly></td>
+              <td><input type="text" id="meet_target_response" readonly></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>ขั้นตอนที่ 3: ระบุปัจจัยล่าช้าและปัจจัยสนับสนุน</h3>
+        <table>
+          <thead>
+            <tr>
+              <th class="time-period-column">ช่วงเวลา</th>
+              <th>ปัจจัยล่าช้า (Bottlenecks)</th>
+              <th>ปัจจัยสนับสนุน (Enablers)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time-period-column" style="background-color: #fee2e2;"><strong>ตรวจจับ<br>Detection</strong>
+              </td>
+              <td><textarea id="bottleneck_detection" class="form-textarea" rows="3"></textarea></td>
+              <td><textarea id="enabler_detection" class="form-textarea" rows="3"></textarea></td>
+            </tr>
+            <tr>
+              <td class="time-period-column" style="background-color: #fef9c3;">
+                <strong>แจ้งเตือน<br>Notification</strong>
+              </td>
+              <td><textarea id="bottleneck_notification" class="form-textarea" rows="3"></textarea></td>
+              <td><textarea id="enabler_notification" class="form-textarea" rows="3"></textarea></td>
+            </tr>
+            <tr>
+              <td class="time-period-column" style="background-color: #a7f3d0;"><strong>ตอบโต้<br>Response</strong></td>
+              <td><textarea id="bottleneck_response" class="form-textarea" rows="3"></textarea></td>
+              <td><textarea id="enabler_response" class="form-textarea" rows="3"></textarea></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <small>ควรเฉพาะเจาะจง (Specific) แก้ไขได้ (Actionable) เป็นรากปัญหา (Identify root causes) มุ่งเน้นระบบ (Focus on system)</small>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="card">
+        <h3>ขั้นตอนที่ 4: เสนอการดำเนินการแก้ไขเพื่อจัดการปัญหาจุดล่าช้า</h3>
+        <h4>มาตรการระยะสั้น</h4>
+        <p class="text-sm text-gray-600 mb-2">มาตรการที่สามารถแก้ไขได้ทันที (เช่น เมื่อมีทรัพยากรพร้อมหรือคาดว่าจะมี)
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>มาตรการที่เสนอ</th>
+              <th>ปัจจัยล่าช้าเป้าหมาย</th>
+              <th>หน่วยงานที่รับผิดชอบ</th>
+              <th>เป้าหมายวันที่เริ่มต้น</th>
+              <th>เป้าหมายวันที่สิ้นสุด</th>
+            </tr>
+          </thead>
+          <tbody id="short-term-actions-body"></tbody>
+        </table>
+        <h4 class="mt-4">มาตรการระยะยาว</h4>
+        <p class="text-sm text-gray-600 mb-2">มาตรการที่จำเป็นต้องวางแผนและจัดหางบประมาณในระยะยาว (เช่น
+          ผ่านระบบแผนและงบประมาณประจำปี)</p>
+        <table>
+          <thead>
+            <tr>
+              <th>มาตรการที่เสนอ</th>
+              <th>ปัจจัยล่าช้าเป้าหมาย</th>
+              <th>หน่วยงานที่รับผิดชอบ</th>
+              <th>โอกาสในการวางแผนและจัดหางบประมาณ</th>
+            </tr>
+          </thead>
+          <tbody id="long-term-actions-body"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">
+                <small>ควรเฉพาะเจาะจง (Specific) วัดผลได้ (Measurable) บรรลุผลได้ (Achievable) เกี่ยวข้อง (Relevant) มีกรอบเวลาชัดเจน (Time-bound)</small>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>ขั้นตอนที่ 5: แนบไฟล์ (ถ้ามี)</h3>
+        <div>
+          <label for="investigationFile" class="block text-sm font-medium text-gray-700 mb-1">แนบไฟล์รายงานสอบสวนโรค </label>
+          <input type="file" id="investigationFile" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+      </div>
+
+      <button type="submit" id="submit-button">
+    <i class="fas fa-save"></i> บันทึกข้อมูล
+</button>
+      <div id="status"></div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+            const shortTermBody = document.getElementById('short-term-actions-body');
+            const longTermBody = document.getElementById('long-term-actions-body');
+            const shortTermRows = 5;
+            const longTermRows = 5;
+
+            for (let i = 1; i <= shortTermRows; i++) {
+                const row = `
+                    <tr>
+                        <td><input type="text" id="action_short_measure_${i}"></td>
+                        <td><input type="text" id="action_short_bottleneck_${i}"></td>
+                        <td><input type="text" id="action_short_unit_${i}"></td>
+                        <td><input type="date" id="action_short_start_${i}"></td>
+                        <td><input type="date" id="action_short_end_${i}"></td>
+                    </tr>`;
+                shortTermBody.innerHTML += row;
+            }
+
+            for (let i = 1; i <= longTermRows; i++) {
+                const row = `
+                    <tr>
+                        <td><input type="text" id="action_long_measure_${i}"></td>
+                        <td><input type="text" id="action_long_bottleneck_${i}"></td>
+                        <td><input type="text" id="action_long_unit_${i}"></td>
+                        <td><input type="text" id="action_long_opportunity_${i}"></td>
+                    </tr>`;
+                longTermBody.innerHTML += row;
+            }
+        });
+  </script>
+
+
+
+  <script>
+    document.getElementById('timeliness-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const submitButton = document.getElementById('submit-button');
+        const form = e.target;
+        
+        submitButton.disabled = true;
+
+        // --- START: แสดง SweetAlert ขณะโหลด ---
+        Swal.fire({
+            title: 'กำลังบันทึกข้อมูล',
+            text: 'กรุณารอสักครู่...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        // --- END: แสดง SweetAlert ขณะโหลด ---
+
+        const getValue = (id) => document.getElementById(id)?.value || '';
+
+        // รวบรวมข้อมูลจากฟอร์ม (เหมือนเดิม)
+        const checkedSymptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(cb => cb.value);
+        const otherSymptom = getValue('symptoms_other');
+        if(otherSymptom) checkedSymptoms.push(otherSymptom);
+        const symptomsString = checkedSymptoms.join(', ');
+
+        const formData = {
+            agency: getValue('agency'),
+            animalSpecies: getValue('animalSpecies'),
+            animalAge: `${getValue('animalAgeYear') || 0} ปี ${getValue('animalAgeMonth') || 0} เดือน`,
+            ownershipStatus: getValue('ownershipStatus'),
+            vaccinationHistory: getValue('vaccinationHistory'),
+            vaccinationDate: getValue('vaccinationDate'),
+            causeSelect: getValue('causeSelect'),
+            otherCause: getValue('otherCause'),
+            symptoms: symptomsString,
+            province: getValue('province'),
+            district: getValue('district'),
+            subdistrict: getValue('subdistrict'),
+            latitude: getValue('latitude'),
+            longitude: getValue('longitude'),
+            date_of_emergence: getValue('date_of_emergence'),
+            desc_emergence: getValue('desc_emergence'),
+            date_of_detection: getValue('date_of_detection'),
+            desc_detection: getValue('desc_detection'),
+            date_of_notification: getValue('date_of_notification'),
+            desc_notification: getValue('desc_notification'),
+            date_of_response_initiation: getValue('date_of_response_initiation'),
+            desc_response_initiation: getValue('desc_response_initiation'),
+            date_investigation: getValue('date_investigation'),
+            desc_investigation: getValue('desc_investigation'),
+            date_epi_analysis: getValue('date_epi_analysis'),
+            desc_epi_analysis: getValue('desc_epi_analysis'),
+            date_lab_sample: getValue('date_lab_sample'),
+            desc_lab_sample: getValue('desc_lab_sample'),
+            date_vet_measure: getValue('date_vet_measure'),
+            desc_vet_measure: getValue('desc_vet_measure'),
+            date_risk_comm: getValue('date_risk_comm'),
+            desc_risk_comm: getValue('desc_risk_comm'),
+            date_coordination: getValue('date_coordination'),
+            desc_coordination: getValue('desc_coordination'),
+            date_of_response_completion: getValue('date_of_response_completion'),
+            desc_response_completion: getValue('desc_response_completion'),
+            timeliness_detection_days: getValue('timeliness_detection_days'),
+            target_detection_days: getValue('target_detection_days'),
+            meet_target_detection: getValue('meet_target_detection'),
+            timeliness_notification_days: getValue('timeliness_notification_days'),
+            target_notification_days: getValue('target_notification_days'),
+            meet_target_notification: getValue('meet_target_notification'),
+            timeliness_response_days: getValue('timeliness_response_days'),
+            target_response_days: getValue('target_response_days'),
+            meet_target_response: getValue('meet_target_response'),
+            bottleneck_detection: getValue('bottleneck_detection'),
+            enabler_detection: getValue('enabler_detection'),
+            bottleneck_notification: getValue('bottleneck_notification'),
+            enabler_notification: getValue('enabler_notification'),
+            bottleneck_response: getValue('bottleneck_response'),
+            enabler_response: getValue('enabler_response'),
+            actions: []
+        };
+        const shortTermCount = 5;
+        for (let i = 1; i <= shortTermCount; i++) {
+            const measure = getValue(`action_short_measure_${i}`);
+            if (measure) formData.actions.push({ type: 'Short-term', measure: measure, bottleneck: getValue(`action_short_bottleneck_${i}`), unit: getValue(`action_short_unit_${i}`), start_date: getValue(`action_short_start_${i}`), end_date: getValue(`action_short_end_${i}`) });
+        }
+        const longTermCount = 5;
+        for (let i = 1; i <= longTermCount; i++) {
+            const measure = getValue(`action_long_measure_${i}`);
+            if (measure) formData.actions.push({ type: 'Long-term', measure: measure, bottleneck: getValue(`action_long_bottleneck_${i}`), unit: getValue(`action_long_unit_${i}`), opportunity: getValue(`action_long_opportunity_${i}`) });
+        }
+
+        const fileInput = document.getElementById('investigationFile');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileObject = {
+                    base64: e.target.result.split(',')[1],
+                    mimeType: file.type,
+                    name: file.name
+                };
+                google.script.run
+                    .withSuccessHandler(showSuccess)
+                    .withFailureHandler(showError)
+                    .saveData(formData, fileObject);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            google.script.run
+                .withSuccessHandler(showSuccess)
+                .withFailureHandler(showError)
+                .saveData(formData, null);
+        }
+
+        // --- START: แสดง SweetAlert เมื่อสำเร็จ ---
+        function showSuccess(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            
+            submitButton.disabled = false;
+            form.reset();
+            updateTimelinessCalculations();
+            document.getElementById('district').innerHTML = '<option value="">-- เลือกอำเภอ --</option>';
+            document.getElementById('district').disabled = true;
+            document.getElementById('subdistrict').innerHTML = '<option value="">-- เลือกตำบล --</option>';
+            document.getElementById('subdistrict').disabled = true;
+            document.getElementById('vaccinationDateContainer').classList.add('hidden');
+            document.getElementById('otherCauseContainer').classList.add('hidden');
+            document.getElementById('symptoms-checkbox-container').innerHTML = '<p class="text-gray-500 text-sm">กรุณาเลือก "โรค/เหตุการณ์ผิดปกติ" ด้านบนเพื่อแสดงรายการอาการ</p>';
+        }
+        // --- END: แสดง SweetAlert เมื่อสำเร็จ ---
+
+        // --- START: แสดง SweetAlert เมื่อเกิดข้อผิดพลาด ---
+        function showError(error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: error.message
+            });
+            submitButton.disabled = false;
+        }
+        // --- END: แสดง SweetAlert เมื่อเกิดข้อผิดพลาด ---
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const provinceSelect = document.getElementById("province");
+        const districtSelect = document.getElementById("district");
+        const subdistrictSelect = document.getElementById("subdistrict");
+
+        // --- 1. เริ่มต้นด้วยการดึงรายชื่อจังหวัด ---
+        provinceSelect.innerHTML = '<option value="">Loading provinces...</option>';
+        google.script.run
+            .withSuccessHandler(populateProvinces)
+            .withFailureHandler(showError)
+            .getProvinces();
+
+        // ฟังก์ชันสำหรับแสดงผลจังหวัด
+        function populateProvinces(provinces) {
+            if (!provinces || provinces.length === 0) {
+                showError();
+                return;
+            }
+            provinceSelect.innerHTML = '<option value="">-- เลือกจังหวัด --</option>';
+            provinces.forEach(province => {
+                const opt = document.createElement("option");
+                opt.value = opt.text = province;
+                provinceSelect.appendChild(opt);
+            });
+        }
+
+        // --- 2. เมื่อเลือกจังหวัด ให้ไปดึงรายชื่ออำเภอ ---
+        provinceSelect.addEventListener("change", () => {
+            const selectedProvince = provinceSelect.value;
+            // รีเซ็ตอำเภอและตำบล
+            districtSelect.innerHTML = '<option value="">-- เลือกอำเภอ --</option>';
+            districtSelect.disabled = true;
+            subdistrictSelect.innerHTML = '<option value="">-- เลือกตำบล --</option>';
+            subdistrictSelect.disabled = true;
+            
+            if (selectedProvince) {
+                districtSelect.innerHTML = '<option value="">Loading districts...</option>';
+                google.script.run
+                    .withSuccessHandler(populateDistricts)
+                    .withFailureHandler(showError)
+                    .getDistricts(selectedProvince);
+            }
+        });
+
+        // ฟังก์ชันสำหรับแสดงผลอำเภอ
+        function populateDistricts(districts) {
+             if (!districts) { // ไม่ต้องเช็ค length เพราะอาจจะไม่มีอำเภอ
+                showError();
+                return;
+            }
+            districtSelect.innerHTML = '<option value="">-- เลือกอำเภอ --</option>';
+            districts.forEach(district => {
+                const opt = document.createElement("option");
+                opt.value = opt.text = district;
+                districtSelect.appendChild(opt);
+            });
+            districtSelect.disabled = false;
+        }
+
+        // --- 3. เมื่อเลือกอำเภอ ให้ไปดึงรายชื่อตำบล ---
+        districtSelect.addEventListener("change", () => {
+            const selectedProvince = provinceSelect.value;
+            const selectedDistrict = districtSelect.value;
+            // รีเซ็ตตำบล
+            subdistrictSelect.innerHTML = '<option value="">-- เลือกตำบล --</option>';
+            subdistrictSelect.disabled = true;
+
+            if (selectedDistrict) {
+                subdistrictSelect.innerHTML = '<option value="">Loading sub-districts...</option>';
+                google.script.run
+                    .withSuccessHandler(populateSubdistricts)
+                    .withFailureHandler(showError)
+                    .getSubdistricts(selectedProvince, selectedDistrict);
+            }
+        });
+
+        // ฟังก์ชันสำหรับแสดงผลตำบล
+        function populateSubdistricts(subdistricts) {
+            if (!subdistricts) {
+                showError();
+                return;
+            }
+            subdistrictSelect.innerHTML = '<option value="">-- เลือกตำบล --</option>';
+            subdistricts.forEach(subdistrict => {
+                const opt = document.createElement("option");
+                opt.value = opt.text = subdistrict;
+                subdistrictSelect.appendChild(opt);
+            });
+            subdistrictSelect.disabled = false;
+        }
+        
+        // ฟังก์ชันสำหรับแสดงข้อความ Error
+        function showError() {
+            provinceSelect.innerHTML = '<option value="">เกิดข้อผิดพลาด</option>';
+        }
+
+
+        // --- ส่วนของ CONDITIONAL LOGIC (โรค/อาการ และการฉีดวัคซีน) ให้คงไว้เหมือนเดิม ---
+        const causeSelect = document.getElementById('causeSelect');
+        const otherCauseContainer = document.getElementById('otherCauseContainer');
+        const otherCauseInput = document.getElementById('otherCause');
+        const symptomsContainer = document.getElementById('symptoms-checkbox-container');
+        let diseaseSymptomsData = {};
+
+        google.script.run.withSuccessHandler(data => {
+            diseaseSymptomsData = data.error ? {} : data;
+        }).getDiseaseSymptomsData();
+
+        causeSelect.addEventListener('change', () => {
+            // โค้ดส่วนแสดง checkbox อาการ... (เหมือนเดิม)
+             const selectedDisease = causeSelect.value;
+            if (selectedDisease === 'other') {
+                otherCauseContainer.classList.remove('hidden');
+                otherCauseInput.required = true;
+            } else {
+                otherCauseContainer.classList.add('hidden');
+                otherCauseInput.required = false;
+                otherCauseInput.value = '';
+            }
+            symptomsContainer.innerHTML = '';
+            const symptoms = diseaseSymptomsData[selectedDisease];
+            if (symptoms && symptoms.length > 0) {
+                const checkboxGroup = document.createElement('div');
+                checkboxGroup.className = 'symptom-group';
+                symptoms.forEach(symptom => {
+                    const label = document.createElement('label');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'symptoms';
+                    checkbox.value = symptom;
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(' ' + symptom));
+                    checkboxGroup.appendChild(label);
+                });
+                symptomsContainer.appendChild(checkboxGroup);
+            } else if(selectedDisease && selectedDisease !== 'other') {
+                symptomsContainer.innerHTML = '<p class="text-gray-500 text-sm">ไม่พบรายการอาการสำหรับโรคที่เลือก</p>';
+            } else if (selectedDisease === 'other'){
+                const otherSymptomTextarea = `<label for="symptoms_other" class="block text-sm font-medium text-gray-700 mb-1">ระบุอาการอื่นๆ</label><textarea id="symptoms_other" class="form-textarea" rows="3"></textarea>`;
+                symptomsContainer.innerHTML = otherSymptomTextarea;
+            } else {
+                symptomsContainer.innerHTML = '<p class="text-gray-500 text-sm">กรุณาเลือก "โรค/เหตุการณ์ผิดปกติ" ด้านบนเพื่อแสดงรายการอาการ</p>';
+            }
+        });
+
+        const vaccinationHistorySelect = document.getElementById('vaccinationHistory');
+        const vaccinationDateContainer = document.getElementById('vaccinationDateContainer');
+        const vaccinationDateInput = document.getElementById('vaccinationDate');
+        vaccinationHistorySelect.addEventListener('change', () => {
+             if (vaccinationHistorySelect.value === 'ฉีด') {
+                vaccinationDateContainer.classList.remove('hidden');
+                vaccinationDateInput.required = true;
+            } else {
+                vaccinationDateContainer.classList.add('hidden');
+                vaccinationDateInput.required = false;
+                vaccinationDateInput.value = '';
+            }
+        });
+    });
+  </script>
+
+  <script>
+    let updateTimelinessCalculations; 
+        document.addEventListener('DOMContentLoaded', () => {
+            const TARGET_DAYS = { detection: 7, notification: 1, response: 7 };
+            const getElem = (id) => document.getElementById(id);
+            const dateEmergence = getElem('date_of_emergence');
+            const dateDetection = getElem('date_of_detection');
+            const dateNotification = getElem('date_of_notification');
+            const dateResponseInitiation = getElem('date_of_response_initiation');
+            const dateResponseCompletion = getElem('date_of_response_completion');
+            const timelinessDetectionDays = getElem('timeliness_detection_days');
+            const targetDetectionDays = getElem('target_detection_days');
+            const meetTargetDetection = getElem('meet_target_detection');
+            const timelinessNotificationDays = getElem('timeliness_notification_days');
+            const targetNotificationDays = getElem('target_notification_days');
+            const meetTargetNotification = getElem('meet_target_notification');
+            const timelinessResponseDays = getElem('timeliness_response_days');
+            const targetResponseDays = getElem('target_response_days');
+            const meetTargetResponse = getElem('meet_target_response');
+            function calculateDateDifference(dateStrEnd, dateStrStart) { if (!dateStrEnd || !dateStrStart) return null; const endDate = new Date(dateStrEnd); const startDate = new Date(dateStrStart); if (isNaN(endDate.getTime()) || isNaN(startDate.getTime()) || startDate > endDate) return null; const differenceInTime = endDate.getTime() - startDate.getTime(); return Math.ceil(differenceInTime / (1000 * 3600 * 24)); }
+            updateTimelinessCalculations = function() { const detectionDays = calculateDateDifference(dateDetection.value, dateEmergence.value); timelinessDetectionDays.value = (detectionDays !== null) ? detectionDays : ''; targetDetectionDays.value = TARGET_DAYS.detection; meetTargetDetection.value = (detectionDays !== null) ? (detectionDays <= TARGET_DAYS.detection ? 'ใช่' : 'ไม่ใช่') : ''; const notificationDays = calculateDateDifference(dateNotification.value, dateDetection.value); timelinessNotificationDays.value = (notificationDays !== null) ? notificationDays : ''; targetNotificationDays.value = TARGET_DAYS.notification; meetTargetNotification.value = (notificationDays !== null) ? (notificationDays <= TARGET_DAYS.notification ? 'ใช่' : 'ไม่ใช่') : ''; const responseDays = calculateDateDifference(dateResponseCompletion.value, dateNotification.value); timelinessResponseDays.value = (responseDays !== null) ? responseDays : ''; targetResponseDays.value = TARGET_DAYS.response; meetTargetResponse.value = (responseDays !== null) ? (responseDays <= TARGET_DAYS.response ? 'ใช่' : 'ไม่ใช่') : ''; }
+            function updateResponseDates() { const sourceDateElements = document.querySelectorAll('.response-date-source'); const dates = Array.from(sourceDateElements).map(el => el.value).filter(dateStr => dateStr).map(dateStr => new Date(dateStr)); if (dates.length === 0) { dateResponseInitiation.value = ''; dateResponseCompletion.value = ''; } else { const minDate = new Date(Math.min.apply(null, dates)); const maxDate = new Date(Math.max.apply(null, dates)); dateResponseInitiation.value = minDate.toISOString().split('T')[0]; dateResponseCompletion.value = maxDate.toISOString().split('T')[0]; } updateTimelinessCalculations(); }
+            document.querySelectorAll('.response-date-source').forEach(el => { el.addEventListener('change', updateResponseDates); });
+            [dateEmergence, dateDetection, dateNotification].forEach(dateInput => { dateInput.addEventListener('change', updateTimelinessCalculations); });
+            updateResponseDates();
+            updateTimelinessCalculations();
+        });
+  </script>
+</body>
+
+</html>
